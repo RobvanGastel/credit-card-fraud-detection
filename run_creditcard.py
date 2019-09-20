@@ -33,7 +33,14 @@ from keras.utils import to_categorical
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 
-network.fit(X_train, y_train, epochs=5, batch_size=128)
+# Classification weights
+weights = {
+    0: 1,
+    1: 190
+}
+
+network.fit(X_train, y_train, epochs=5, batch_size=128, 
+            class_weight=weights)
 y_pred = network.predict(X_test)
 
 matrix = confusion_matrix(
