@@ -4,6 +4,9 @@ import pandas as pd
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 
+from keras.utils import to_categorical
+from keras import models, layers
+
 df = pd.read_csv('./creditcard.csv', sep=',')
 
 X = df[df.columns[~df.columns.isin(['Time', 'Class'])]]
@@ -16,9 +19,6 @@ X_train, X_test, y_train, y_test = train_test_split(X,
 print("X: ", X.shape)
 print("y: ", y.shape)
 
-from keras import models
-from keras import layers
-
 network = models.Sequential()
 network.add(layers.Dense(29, activation='relu', 
                         input_shape=(29,)))
@@ -27,8 +27,6 @@ network.add(layers.Dense(2, activation='softmax'))
 network.compile(optimizer='rmsprop',
                 loss='categorical_crossentropy',
                 metrics=['accuracy'])
-
-from keras.utils import to_categorical
 
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
