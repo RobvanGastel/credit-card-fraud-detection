@@ -3,6 +3,7 @@ import pandas as pd
 
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
+from keras.optimizers import Adagrad
 
 from keras.utils import to_categorical
 from keras import models, layers
@@ -19,11 +20,14 @@ X_train, X_test, y_train, y_test = train_test_split(X,
 print("X: ", X.shape)
 print("y: ", y.shape)
 
+# Prevent overfitting, i.e. regularization, dropout
 network = models.Sequential()
+network.add(layers.Dropout(0.2, input_shape=(29,)))
 network.add(layers.Dense(29, activation='relu', 
                         input_shape=(29,)))
 network.add(layers.Dense(2, activation='softmax'))
 
+# Adagrad produces a lot of False Positive results
 network.compile(optimizer='rmsprop',
                 loss='categorical_crossentropy',
                 metrics=['accuracy'])
@@ -34,10 +38,10 @@ y_test = to_categorical(y_test)
 # Classification weights
 weights = {
     0: 1,
-    1: 190
+    1: 200
 }
 
-network.fit(X_train, y_train, epochs=5, batch_size=128, 
+network.fit(X_train, y_train, epochs=10, batch_size=128, 
             class_weight=weights)
 y_pred = network.predict(X_test)
 
